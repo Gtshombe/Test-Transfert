@@ -1,0 +1,177 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button
+        mode="ios"
+        color="light"
+        defaultHref="home"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button color="light" auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="light" lass="main-header4">Profil</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid fixed class="ion-no-padding">
+    <ion-header class="ion-no-border" collapse="condense">
+      <ion-toolbar>
+        <ion-title color="dark" size="large">Profil</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <!-- <div class="logo-box">
+      <img src="https://pbs.twimg.com/profile_images/1148952014036054016/xxv7lLvp.jpg" alt="">
+    </div> -->
+
+    <div class="login-form">
+      <ion-text color="dark">
+        <h2 text-center class="ion-margin-bottom main-header7">
+          Détails du profil.
+        </h2>
+      </ion-text>
+      <form [formGroup]="updateForm" novalidate>
+        <!-- File upload progress bar -->
+        <div *ngIf="percentageVal | async as percentage">
+          Progress: {{ percentage | number }}%
+          <ion-progress-bar value="{{ percentage / 100 }}"></ion-progress-bar>
+        </div>
+        <ion-card class="ion-text-center">
+          <ion-card-header>
+            <ion-card-title>Image de profil</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-button color="primary" size="medium">
+              <input type="file" (change)="uploadImage($event.target.files)" />
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+        <ion-list class="ion-margin-top ion-padding">
+          <!-- ############ -->
+          <ion-item class="roundedInput8px margin-bottom-10">
+            <ion-label>
+              <ion-icon name="person-outline" color="medium"></ion-icon>
+            </ion-label>
+            <ion-input
+              type="text"
+              formControlName="firstname"
+              [value]="(userDetail | async)?.firstname"
+            ></ion-input>
+          </ion-item>
+          <!-- ############ -->
+          <ion-item class="roundedInput8px margin-bottom-10">
+            <ion-label>
+              <ion-icon name="people-outline" color="medium"></ion-icon>
+            </ion-label>
+            <ion-input
+              type="text"
+              formControlName="lastname"
+              [value]="(userDetail | async)?.lastname"
+            ></ion-input>
+          </ion-item>
+          <!-- ############ -->
+          <ion-item class="roundedInput8px margin-bottom-10">
+            <ion-label>
+              <ion-icon name="mail-outline" color="medium"></ion-icon>
+            </ion-label>
+            <ion-input
+              type="text"
+              formControlName="email"
+              [value]="(userDetail | async)?.email"
+            ></ion-input>
+          </ion-item>
+
+          <!-- ############ -->
+          <ion-item class="roundedInput8px margin-bottom-10">
+            <ion-label>
+              <ion-icon name="call-outline" color="medium"></ion-icon>
+            </ion-label>
+            <ion-input
+              type="text"
+              formControlName="phone"
+              [value]="(userDetail | async)?.phone"
+            ></ion-input>
+          </ion-item>
+          <ng-container *ngIf="(userDetail | async)?.is_ingeson">
+            <ion-item>
+              <ion-label>
+                <ion-label position="stacked">About</ion-label>
+              </ion-label>
+              <ion-textarea
+                class="roundedInput8px margin-bottom-10"
+                rows="5"
+                formControlName="about"
+                [value]="ingeson?.about"
+              ></ion-textarea>
+            </ion-item>
+            <!---Afficher les tarifs fixes par l'utilisateur -->
+            <ion-item
+              class="roundedInput8px margin-bottom-10"
+              *ngFor="let tarifservice of tarifservices"
+            >
+              <ion-label>
+                <ion-label position="stacked"
+                  >{{tarifservice?.service_name}}</ion-label
+                >
+              </ion-label>
+              <ion-input
+                type="text"
+                [value]="tarifservice?.tarif"
+                (ionInput)="getValue($event, tarifservice?.service_id)"
+              ></ion-input>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+        <!--Only for ingeson-->
+        <ng-container *ngIf="(userDetail | async)?.is_ingeson">
+          <ion-item class="roundedInput8px margin-bottom-10">
+            <input
+              type="text"
+              class="native-input sc-ion-input-ios"
+              (keydown.enter)="$event.preventDefault()"
+              placeholder="Search Nearest Location"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="off"
+              type="text"
+              value="{{address}}"
+              #search
+            />
+          </ion-item>
+
+          <agm-map
+            [latitude]="latitude"
+            [longitude]="longitude"
+            [zoom]="zoom"
+            #map
+            id="map"
+          >
+            <agm-marker
+              [latitude]="latitude"
+              [longitude]="longitude"
+              [markerDraggable]="true"
+              (dragEnd)="markerDragEnd($event)"
+            ></agm-marker>
+          </agm-map>
+        </ng-container>
+
+        <ion-button
+          mode="ios"
+          color="dark"
+          expand="block"
+          class="ion-margin-top"
+          (click)="updateProfile()"
+        >
+          Mettre à jour le profil
+        </ion-button>
+        <ion-text color="dark">
+          <h2 class="ion-text-center ion-margin-bottom main-header8">
+            En cliquant sur "se déconnecter" vous acceptez les termes et
+            conditions suivantes.
+          </h2>
+        </ion-text>
+      </form>
+    </div>
+  </ion-grid>
+</ion-content>
